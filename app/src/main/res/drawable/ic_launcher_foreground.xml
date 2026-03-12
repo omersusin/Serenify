@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:translateX="22"
+        android:translateY="22">
+        <!-- Outer glow circle -->
+        <path
+            android:fillColor="#4D8B5CF6"
+            android:pathData="M32,4 A28,28 0 1,1 32,60 A28,28 0 1,1 32,4Z" />
+
+        <!-- Main circle -->
+        <path
+            android:fillColor="#8B5CF6"
+            android:pathData="M32,10 A22,22 0 1,1 32,54 A22,22 0 1,1 32,10Z" />
+
+        <!-- Inner circle accent -->
+        <path
+            android:fillColor="#AB8BF7"
+            android:pathData="M32,16 A16,16 0 1,1 32,48 A16,16 0 1,1 32,16Z" />
+
+        <!-- Lotus/serenity shape - petal 1 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M32,20 Q38,28 32,38 Q26,28 32,20Z" />
+
+        <!-- Petal left -->
+        <path
+            android:fillColor="#E0FFFFFF"
+            android:pathData="M24,28 Q30,24 32,32 Q26,30 24,28Z" />
+
+        <!-- Petal right -->
+        <path
+            android:fillColor="#E0FFFFFF"
+            android:pathData="M40,28 Q34,24 32,32 Q38,30 40,28Z" />
+
+        <!-- Small dot -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M32,26 A2,2 0 1,1 32,30 A2,2 0 1,1 32,26Z" />
+    </group>
+</vector>
