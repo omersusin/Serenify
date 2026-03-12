@@ -1,11 +1,12 @@
 package com.serenify.app.ui.components
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,28 +29,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.serenify.app.ui.theme.*
 
+// -- CARD VARIANTS --
+
 @Composable
-fun GlassCard(
+fun SurfaceCard(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = GlassWhite.copy(alpha = 0.08f)
-        )
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = BgCard)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            GlassWhite.copy(alpha = 0.06f),
-                            GlassHighlight
-                        )
-                    )
+                .border(
+                    width = 1.dp,
+                    color = Border,
+                    shape = RoundedCornerShape(20.dp)
                 )
                 .padding(20.dp),
             content = content
@@ -58,65 +56,105 @@ fun GlassCard(
 }
 
 @Composable
-fun GradientButton(
-    text: String,
-    onClick: () -> Unit,
+fun AccentCard(
+    accent: Color = Accent,
     modifier: Modifier = Modifier,
-    colors: List<Color> = listOf(VividPurple, ElectricBlue),
-    enabled: Boolean = true
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    val scale = remember { Animatable(1f) }
-
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                if (enabled) {
-                    Brush.horizontalGradient(colors)
-                } else {
-                    Brush.horizontalGradient(
-                        listOf(TextMuted.copy(alpha = 0.3f), TextMuted.copy(alpha = 0.3f))
-                    )
-                }
-            )
-            .clickable(enabled = enabled) { onClick() }
-            .scale(scale.value)
-            .padding(horizontal = 32.dp, vertical = 14.dp),
-        contentAlignment = Alignment.Center
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = BgCard)
     ) {
-        Text(
-            text = text,
-            color = if (enabled) TextPrimary else TextMuted,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp
-        )
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .width(4.dp)
+                    .fillMaxHeight()
+                    .background(accent)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                content = content
+            )
+        }
     }
 }
 
 @Composable
-fun AnimatedCircularProgress(
+fun CompactCard(
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(BgCard)
+            .border(1.dp, Border, RoundedCornerShape(16.dp))
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        content = content
+    )
+}
+
+// -- BUTTONS --
+
+@Composable
+fun PrimaryButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.96f else 1f,
+        animationSpec = spring(dampingRatio = 0.75f),
+        label = "btnScale"
+    )
+
+    Box(
+        modifier = modifier
+            .scale(scale)
+            .clip(RoundedCornerShape(14.dp))
+            .background(if (enabled) Accent else TextFaint)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = enabled
+            ) { onClick() }
+            .padding(horizontal = 28.dp, vertical = 14.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            color = if (enabled) BgPrimary else TextDim,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 15.sp
+        )
+    }
+}
+
+// -- PROGRESS RING --
+
+@Composable
+fun ProgressRing(
     progress: Float,
     modifier: Modifier = Modifier,
     size: Dp = 200.dp,
-    strokeWidth: Dp = 12.dp,
-    gradientColors: List<Color> = listOf(VividPurple, CyanGlow),
-    trackColor: Color = GlassWhite.copy(alpha = 0.1f),
+    strokeWidth: Dp = 10.dp,
+    accentColor: Color = Accent,
+    trackColor: Color = Border,
     content: @Composable () -> Unit = {}
 ) {
     val animatedProgress by animateFloatAsState(
-        targetValue = progress,
-        animationSpec = tween(durationMillis = 1000, easing = EaseOutCubic),
-        label = "progress"
-    )
-
-    val shimmerAngle by rememberInfiniteTransition(label = "shimmer").animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(3000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "shimmerAngle"
+        targetValue = progress.coerceIn(0f, 1f),
+        animationSpec = tween(durationMillis = 800, easing = EaseOutCubic),
+        label = "ring"
     )
 
     Box(
@@ -124,13 +162,13 @@ fun AnimatedCircularProgress(
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
+            val stroke = strokeWidth.toPx()
             val arcSize = Size(
-                this.size.width - strokeWidth.toPx(),
-                this.size.height - strokeWidth.toPx()
+                this.size.width - stroke,
+                this.size.height - stroke
             )
-            val topLeft = Offset(strokeWidth.toPx() / 2, strokeWidth.toPx() / 2)
+            val topLeft = Offset(stroke / 2, stroke / 2)
 
-            // Track
             drawArc(
                 color = trackColor,
                 startAngle = -90f,
@@ -138,139 +176,168 @@ fun AnimatedCircularProgress(
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcSize,
-                style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
+                style = Stroke(width = stroke, cap = StrokeCap.Round)
             )
 
-            // Progress
-            drawArc(
-                brush = Brush.sweepGradient(
-                    colors = gradientColors + gradientColors.first(),
-                    center = Offset(this.size.width / 2, this.size.height / 2)
-                ),
-                startAngle = -90f,
-                sweepAngle = animatedProgress * 360f,
-                useCenter = false,
-                topLeft = topLeft,
-                size = arcSize,
-                style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
-            )
+            if (animatedProgress > 0f) {
+                drawArc(
+                    color = accentColor,
+                    startAngle = -90f,
+                    sweepAngle = animatedProgress * 360f,
+                    useCenter = false,
+                    topLeft = topLeft,
+                    size = arcSize,
+                    style = Stroke(width = stroke, cap = StrokeCap.Round)
+                )
+            }
         }
-
         content()
     }
 }
 
+// -- SECTION HEADER --
+
 @Composable
-fun StatCard(
+fun SectionHeader(
     title: String,
-    value: String,
-    icon: @Composable () -> Unit,
-    accentColor: Color = VividPurple,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    trailing: @Composable (() -> Unit)? = null
 ) {
-    GlassCard(modifier = modifier) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(accentColor.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) {
-                icon()
-            }
-            Column {
-                Text(
-                    text = value,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = TextPrimary
-                )
-                Text(
-                    text = title,
-                    fontSize = 13.sp,
-                    color = TextMuted
-                )
-            }
-        }
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = TextWhite
+        )
+        trailing?.invoke()
     }
 }
 
+// -- ANIMATED COUNTER --
+
 @Composable
-fun SectionTitle(
-    title: String,
-    modifier: Modifier = Modifier
+fun AnimatedCounter(
+    value: Int,
+    modifier: Modifier = Modifier,
+    color: Color = TextWhite,
+    fontSize: Int = 32
 ) {
+    val animatedValue by animateIntAsState(
+        targetValue = value,
+        animationSpec = tween(600, easing = EaseOutCubic),
+        label = "counter"
+    )
+
     Text(
-        text = title,
-        fontSize = 20.sp,
+        text = "$animatedValue",
+        fontSize = fontSize.sp,
         fontWeight = FontWeight.Bold,
-        color = TextPrimary,
-        modifier = modifier.padding(horizontal = 4.dp)
+        color = color,
+        modifier = modifier
     )
 }
 
-@Composable
-fun ShimmerDot(
-    color: Color = VividPurple,
-    size: Dp = 8.dp
-) {
-    val infiniteTransition = rememberInfiniteTransition(label = "dot")
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800, easing = EaseInOutCubic),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "dotAlpha"
-    )
-
-    Box(
-        modifier = Modifier
-            .size(size)
-            .clip(CircleShape)
-            .background(color.copy(alpha = alpha))
-    )
-}
+// -- QUOTE --
 
 @Composable
-fun QuoteCard(
+fun QuoteBlock(
     quote: String,
     author: String,
     modifier: Modifier = Modifier
 ) {
-    GlassCard(modifier = modifier) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "\"",
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Bold,
-                color = VividPurple,
-                lineHeight = 40.sp
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .background(BgCard)
+            .border(1.dp, Border, RoundedCornerShape(20.dp))
+            .padding(24.dp)
+    ) {
+        Text(
+            text = "❝",
+            fontSize = 28.sp,
+            color = Accent,
+            lineHeight = 28.sp
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = quote,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Normal,
+            color = TextWhite,
+            lineHeight = 24.sp
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .width(20.dp)
+                    .height(2.dp)
+                    .background(Accent)
             )
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = quote,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
-                color = TextPrimary,
-                textAlign = TextAlign.Center,
-                lineHeight = 24.sp,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "— $author",
+                text = author,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
-                color = SoftPurple
+                color = TextDim
             )
         }
+    }
+}
+
+// -- ICON BADGE --
+
+@Composable
+fun IconBadge(
+    icon: @Composable () -> Unit,
+    color: Color = Accent,
+    size: Dp = 44.dp,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(RoundedCornerShape(14.dp))
+            .background(color.copy(alpha = 0.12f)),
+        contentAlignment = Alignment.Center
+    ) {
+        icon()
+    }
+}
+
+// -- INLINE STAT --
+
+@Composable
+fun InlineStat(
+    label: String,
+    value: String,
+    color: Color = Accent,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = value,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = color
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            text = label,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Medium,
+            color = TextDim
+        )
     }
 }

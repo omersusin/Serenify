@@ -2,44 +2,49 @@ package com.serenify.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Primary Gradient
-val DeepPurple = Color(0xFF1A0533)
-val MidnightBlue = Color(0xFF0D1B3E)
-val DarkNavy = Color(0xFF0A1628)
+// Background - nearly pure black with slight warmth
+val BgPrimary = Color(0xFF0B0B0F)
+val BgSecondary = Color(0xFF121218)
+val BgElevated = Color(0xFF1A1A23)
+val BgCard = Color(0xFF16161F)
 
-// Accent Colors
-val VividPurple = Color(0xFF8B5CF6)
-val SoftPurple = Color(0xFFAB8BF7)
-val ElectricBlue = Color(0xFF3B82F6)
-val CyanGlow = Color(0xFF06B6D4)
-val MintGreen = Color(0xFF10B981)
-val WarmOrange = Color(0xFFF59E0B)
-val SoftPink = Color(0xFFEC4899)
-val CoralRed = Color(0xFFEF4444)
+// One hero accent - soft violet
+val Accent = Color(0xFFA78BFA)
+val AccentDim = Color(0xFF7C5CBF)
+val AccentGlow = Color(0x33A78BFA)
+val AccentSubtle = Color(0x1AA78BFA)
 
-// Glass Colors
-val GlassWhite = Color(0x1AFFFFFF)
-val GlassBorder = Color(0x33FFFFFF)
-val GlassHighlight = Color(0x0DFFFFFF)
+// Supporting accents - used sparingly
+val Green = Color(0xFF34D399)
+val GreenDim = Color(0x1A34D399)
+val Blue = Color(0xFF60A5FA)
+val BlueDim = Color(0x1A60A5FA)
+val Orange = Color(0xFFFBBF24)
+val OrangeDim = Color(0x1AFBBF24)
+val Rose = Color(0xFFFB7185)
+val RoseDim = Color(0x1AFB7185)
+val Teal = Color(0xFF2DD4BF)
+val TealDim = Color(0x1A2DD4BF)
 
-// Text Colors
-val TextPrimary = Color(0xFFF1F5F9)
-val TextSecondary = Color(0xFF94A3B8)
-val TextMuted = Color(0xFF64748B)
+// Text - high contrast hierarchy
+val TextWhite = Color(0xFFF9FAFB)
+val TextGray = Color(0xFF9CA3AF)
+val TextDim = Color(0xFF6B7280)
+val TextFaint = Color(0xFF374151)
 
-// Surface
-val SurfaceDark = Color(0xFF111827)
-val SurfaceCard = Color(0x1A8B5CF6)
-val SurfaceElevated = Color(0xFF1E293B)
+// Borders & dividers
+val Border = Color(0xFF2A2A35)
+val BorderLight = Color(0xFF3A3A48)
+val Divider = Color(0xFF1F1F2A)
 
-// Habit Colors
+// Habit palette
 val HabitColors = listOf(
-    Color(0xFF8B5CF6),
-    Color(0xFF3B82F6),
-    Color(0xFF06B6D4),
-    Color(0xFF10B981),
-    Color(0xFFF59E0B),
-    Color(0xFFEC4899),
-    Color(0xFFEF4444),
-    Color(0xFF6366F1)
+    Color(0xFFA78BFA),
+    Color(0xFF60A5FA),
+    Color(0xFF34D399),
+    Color(0xFF2DD4BF),
+    Color(0xFFFBBF24),
+    Color(0xFFFB7185),
+    Color(0xFFF472B6),
+    Color(0xFFA3E635)
 )

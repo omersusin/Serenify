@@ -10,19 +10,19 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val SerenifyColorScheme = darkColorScheme(
-    primary = VividPurple,
-    onPrimary = TextPrimary,
-    primaryContainer = SurfaceCard,
-    secondary = ElectricBlue,
-    onSecondary = TextPrimary,
-    tertiary = CyanGlow,
-    background = DarkNavy,
-    onBackground = TextPrimary,
-    surface = SurfaceDark,
-    onSurface = TextPrimary,
-    surfaceVariant = SurfaceElevated,
-    onSurfaceVariant = TextSecondary,
-    outline = GlassBorder
+    primary = Accent,
+    onPrimary = TextWhite,
+    primaryContainer = AccentSubtle,
+    secondary = Blue,
+    onSecondary = TextWhite,
+    tertiary = Green,
+    background = BgPrimary,
+    onBackground = TextWhite,
+    surface = BgSecondary,
+    onSurface = TextWhite,
+    surfaceVariant = BgElevated,
+    onSurfaceVariant = TextGray,
+    outline = Border
 )
 
 @Composable
@@ -31,8 +31,8 @@ fun SerenifyTheme(content: @Composable () -> Unit) {
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = DarkNavy.toArgb()
-            window.navigationBarColor = DarkNavy.toArgb()
+            window.statusBarColor = BgPrimary.toArgb()
+            window.navigationBarColor = BgPrimary.toArgb()
             WindowCompat.getInsetsController(window, view).apply {
                 isAppearanceLightStatusBars = false
                 isAppearanceLightNavigationBars = false

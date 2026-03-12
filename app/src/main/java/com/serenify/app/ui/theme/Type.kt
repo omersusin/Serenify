@@ -7,65 +7,66 @@ import androidx.compose.ui.unit.sp
 
 val SerenifyTypography = Typography(
     displayLarge = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 40.sp,
+        fontWeight = FontWeight.Black,
+        fontSize = 44.sp,
         lineHeight = 48.sp,
-        letterSpacing = (-1).sp,
-        color = TextPrimary
+        letterSpacing = (-1.5).sp,
+        color = TextWhite
     ),
     displayMedium = TextStyle(
         fontWeight = FontWeight.Bold,
-        fontSize = 32.sp,
+        fontSize = 34.sp,
         lineHeight = 40.sp,
         letterSpacing = (-0.5).sp,
-        color = TextPrimary
+        color = TextWhite
     ),
     headlineLarge = TextStyle(
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
-        lineHeight = 36.sp,
-        color = TextPrimary
+        lineHeight = 34.sp,
+        letterSpacing = (-0.3).sp,
+        color = TextWhite
     ),
     headlineMedium = TextStyle(
         fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp,
-        lineHeight = 32.sp,
-        color = TextPrimary
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        color = TextWhite
     ),
     titleLarge = TextStyle(
         fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
-        lineHeight = 28.sp,
-        color = TextPrimary
+        fontSize = 18.sp,
+        lineHeight = 24.sp,
+        color = TextWhite
     ),
     titleMedium = TextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        color = TextPrimary
+        fontSize = 15.sp,
+        lineHeight = 22.sp,
+        color = TextGray
     ),
     bodyLarge = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        color = TextSecondary
+        color = TextGray
     ),
     bodyMedium = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-        color = TextSecondary
+        color = TextGray
     ),
     labelLarge = TextStyle(
         fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        color = TextPrimary
+        fontSize = 13.sp,
+        lineHeight = 18.sp,
+        color = TextWhite
     ),
     labelMedium = TextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
+        fontSize = 11.sp,
         lineHeight = 16.sp,
-        color = TextMuted
+        color = TextDim
     )
 )

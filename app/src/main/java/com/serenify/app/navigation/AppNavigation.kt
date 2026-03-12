@@ -3,25 +3,30 @@ package com.serenify.app.navigation
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Timer
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Timer
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,10 +44,10 @@ sealed class Screen(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
 ) {
-    data object Home : Screen("home", "Home", Icons.Filled.Home, Icons.Outlined.Home)
-    data object Timer : Screen("timer", "Focus", Icons.Filled.Timer, Icons.Outlined.Timer)
-    data object Habits : Screen("habits", "Habits", Icons.Filled.CheckCircle, Icons.Outlined.CheckCircle)
-    data object Profile : Screen("profile", "Profile", Icons.Filled.Person, Icons.Outlined.Person)
+    data object Home : Screen("home", "Home", Icons.Rounded.Home, Icons.Outlined.Home)
+    data object Timer : Screen("timer", "Focus", Icons.Rounded.Timer, Icons.Outlined.Timer)
+    data object Habits : Screen("habits", "Habits", Icons.Rounded.CheckCircle, Icons.Outlined.CheckCircle)
+    data object Profile : Screen("profile", "Profile", Icons.Rounded.Person, Icons.Outlined.Person)
 }
 
 val screens = listOf(Screen.Home, Screen.Timer, Screen.Habits, Screen.Profile)
@@ -56,28 +61,16 @@ fun AppNavigation() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(DeepPurple, MidnightBlue, DarkNavy)
-                )
-            )
+            .background(BgPrimary)
     ) {
         NavHost(
             navController = navController,
             startDestination = Screen.Home.route,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 80.dp),
-            enterTransition = {
-                fadeIn(animationSpec = tween(300)) +
-                slideInVertically(
-                    animationSpec = tween(300),
-                    initialOffsetY = { 30 }
-                )
-            },
-            exitTransition = {
-                fadeOut(animationSpec = tween(300))
-            }
+                .padding(bottom = 72.dp),
+            enterTransition = { fadeIn(animationSpec = tween(250)) },
+            exitTransition = { fadeOut(animationSpec = tween(250)) }
         ) {
             composable(Screen.Home.route) { HomeScreen() }
             composable(Screen.Timer.route) { TimerScreen() }
@@ -85,7 +78,7 @@ fun AppNavigation() {
             composable(Screen.Profile.route) { ProfileScreen() }
         }
 
-        BottomNavBar(
+        BottomBar(
             currentRoute = currentRoute,
             navController = navController,
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -94,72 +87,65 @@ fun AppNavigation() {
 }
 
 @Composable
-fun BottomNavBar(
+fun BottomBar(
     currentRoute: String?,
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    val borderColor = Border
+
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            GlassWhite.copy(alpha = 0.12f),
-                            GlassWhite.copy(alpha = 0.08f)
-                        )
-                    )
+            .drawBehind {
+                drawLine(
+                    color = borderColor,
+                    start = Offset(0f, 0f),
+                    end = Offset(size.width, 0f),
+                    strokeWidth = 1.dp.toPx()
                 )
-                .padding(horizontal = 8.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            screens.forEach { screen ->
-                val isSelected = currentRoute == screen.route
+            }
+            .background(BgPrimary)
+            .padding(horizontal = 8.dp)
+            .padding(top = 8.dp, bottom = 12.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        screens.forEach { screen ->
+            val selected = currentRoute == screen.route
+            val interactionSource = remember { MutableInteractionSource() }
 
-                NavigationBarItem(
-                    selected = isSelected,
-                    onClick = {
-                        if (currentRoute != screen.route) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null
+                    ) {
+                        if (!selected) {
                             navController.navigate(screen.route) {
                                 popUpTo(Screen.Home.route) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }
                         }
-                    },
-                    icon = {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                imageVector = if (isSelected) screen.selectedIcon else screen.unselectedIcon,
-                                contentDescription = screen.label,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            if (isSelected) {
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Box(
-                                    modifier = Modifier
-                                        .width(20.dp)
-                                        .height(3.dp)
-                                        .clip(RoundedCornerShape(2.dp))
-                                        .background(VividPurple)
-                                )
-                            }
-                        }
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = VividPurple,
-                        unselectedIconColor = TextMuted,
-                        indicatorColor = VividPurple.copy(alpha = 0.15f)
-                    )
+                    }
+                    .padding(vertical = 6.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = if (selected) screen.selectedIcon else screen.unselectedIcon,
+                    contentDescription = screen.label,
+                    tint = if (selected) Accent else TextFaint,
+                    modifier = Modifier.size(22.dp)
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = screen.label,
+                    fontSize = 11.sp,
+                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                    color = if (selected) Accent else TextFaint
                 )
             }
         }
